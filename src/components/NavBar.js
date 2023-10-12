@@ -30,12 +30,16 @@ const NavBar = () => {
   } = useAuth0();
   const toggle = () => setIsOpen(!isOpen);
 
-  const logoutWithRedirect = () =>
+  const logoutWithRedirect = () => {
     logout({
-        logoutParams: {
-          returnTo: window.location.origin,
-        }
+      logoutParams: {
+        returnTo: window.location.origin,
+      }
     });
+    // set local storage to null
+    localStorage.setItem("ethPrivateKey", false);
+  }
+
 
   return (
     <div className="nav-container">
@@ -56,16 +60,28 @@ const NavBar = () => {
                 </NavLink>
               </NavItem>
               {isAuthenticated && (
-                <NavItem>
-                  <NavLink
-                    tag={RouterNavLink}
-                    to="/external-api"
-                    exact
-                    activeClassName="router-link-exact-active"
-                  >
-                    External API
-                  </NavLink>
-                </NavItem>
+                <>
+                  <NavItem>
+                    <NavLink
+                      tag={RouterNavLink}
+                      to="/profile"
+                      exact
+                      activeClassName="router-link-exact-active"
+                    >
+                      Profile
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink
+                      tag={RouterNavLink}
+                      to="/external-api"
+                      exact
+                      activeClassName="router-link-exact-active"
+                    >
+                      External API
+                    </NavLink>
+                  </NavItem>
+                </>
               )}
             </Nav>
             <Nav className="d-none d-md-block" navbar>
@@ -75,7 +91,7 @@ const NavBar = () => {
                     id="qsLoginBtn"
                     color="primary"
                     className="btn-margin"
-                    onClick={() => loginWithRedirect()}
+                    onClick={() => loginWithRedirect({ authorizationParams: { connection: "twitter" } })}
                   >
                     Log in
                   </Button>
@@ -103,7 +119,7 @@ const NavBar = () => {
                     </DropdownItem>
                     <DropdownItem
                       id="qsLogoutBtn"
-                      onClick={() => logoutWithRedirect()}
+                      onClick={() => logoutWithRedirect({ connection: "twitter" })}
                     >
                       <FontAwesomeIcon icon="power-off" className="mr-3" /> Log
                       out
@@ -119,7 +135,7 @@ const NavBar = () => {
                     id="qsLoginBtn"
                     color="primary"
                     block
-                    onClick={() => loginWithRedirect({})}
+                    onClick={() => loginWithRedirect({ authorizationParams: { connection: "twitter" } })}
                   >
                     Log in
                   </Button>
